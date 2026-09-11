@@ -1,0 +1,210 @@
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_2332rx8ooh2qomll05al(i, j, css_id) {
+          var table = document.getElementById("tinytable_2332rx8ooh2qomll05al");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_2332rx8ooh2qomll05al');
+        // Find the row with data-row attribute matching i
+        var targetRow = table.querySelector(`tr [data-row="${i}"]`).closest('tr');
+        var newRow = table.insertRow(targetRow.rowIndex);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        newCell.setAttribute("data-col", "0");
+        newCell.setAttribute("data-row", i - 1);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_2332rx8ooh2qomll05al(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_2332rx8ooh2qomll05al");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '21', j: 1 }, { i: '21', j: 2 },  ], css_id: 'tinytable_css_wvvsg41a17s9d96nttrt',}, 
+          { positions: [ { i: '16', j: 2 }, { i: '16', j: 1 },  ], css_id: 'tinytable_css_w94fuv33ft4opfpzr1sv',}, 
+          { positions: [ { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '1', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '5', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '7', j: 2 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '20', j: 1 }, { i: '12', j: 2 }, { i: '9', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '20', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 },  ], css_id: 'tinytable_css_45ev7e23pwv9mpl3qqju',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 },  ], css_id: 'tinytable_css_zlih5n1lnt7x2dd65abp',}, 
+          { positions: [ { i: '21', j: 0 },  ], css_id: 'tinytable_css_wc8umcv2bg4i97l7rga6',}, 
+          { positions: [ { i: '16', j: 0 },  ], css_id: 'tinytable_css_2vtu6ox0xnunfqjqcihi',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '10', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 }, { i: '14', j: 0 }, { i: '15', j: 0 }, { i: '20', j: 0 }, { i: '17', j: 0 }, { i: '18', j: 0 }, { i: '19', j: 0 },  ], css_id: 'tinytable_css_4lsyopf3r8qwwog7q7cs',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_1uxnu6wyrnt4mmhwnpgu',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_2332rx8ooh2qomll05al(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_wvvsg41a17s9d96nttrt, .table th.tinytable_css_wvvsg41a17s9d96nttrt { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_w94fuv33ft4opfpzr1sv, .table th.tinytable_css_w94fuv33ft4opfpzr1sv { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_45ev7e23pwv9mpl3qqju, .table th.tinytable_css_45ev7e23pwv9mpl3qqju { text-align: center; }
+      .table td.tinytable_css_zlih5n1lnt7x2dd65abp, .table th.tinytable_css_zlih5n1lnt7x2dd65abp { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_wc8umcv2bg4i97l7rga6, .table th.tinytable_css_wc8umcv2bg4i97l7rga6 { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_2vtu6ox0xnunfqjqcihi, .table th.tinytable_css_2vtu6ox0xnunfqjqcihi { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_4lsyopf3r8qwwog7q7cs, .table th.tinytable_css_4lsyopf3r8qwwog7q7cs { text-align: left; }
+      .table td.tinytable_css_1uxnu6wyrnt4mmhwnpgu, .table th.tinytable_css_1uxnu6wyrnt4mmhwnpgu { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_2332rx8ooh2qomll05al" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan='3'>Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level.</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-0.154 [-0.293, -0.015]</td>
+                  <td data-row="1" data-col="2">0.271 [0.113, 0.428]</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">p=0.030</td>
+                  <td data-row="2" data-col="2">p=7.524e-04</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">emi_mean_tw</td>
+                  <td data-row="3" data-col="1">0.362 [0.313, 0.411]</td>
+                  <td data-row="3" data-col="2">0.288 [0.235, 0.341]</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">p=1.351e-46</td>
+                  <td data-row="4" data-col="2">p=2.668e-26</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">legislative_opposition_tw</td>
+                  <td data-row="5" data-col="1"></td>
+                  <td data-row="5" data-col="2">-0.281 [-0.359, -0.204]</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1"></td>
+                  <td data-row="6" data-col="2">p=1.605e-12</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">presidential_opposition_tw</td>
+                  <td data-row="7" data-col="1"></td>
+                  <td data-row="7" data-col="2">-0.091 [-0.153, -0.030]</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1"></td>
+                  <td data-row="8" data-col="2">p=0.003</td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">senate_tw</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2">-0.330 [-0.490, -0.169]</td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">p=5.725e-05</td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="0">republican_tw</td>
+                  <td data-row="11" data-col="1"></td>
+                  <td data-row="11" data-col="2">-0.279 [-0.406, -0.151]</td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="0"></td>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2">p=1.839e-05</td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="0">SD (Intercept bioguide_id)</td>
+                  <td data-row="13" data-col="1">0.610 [  NA,   NA]</td>
+                  <td data-row="13" data-col="2">0.598 [  NA,   NA]</td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="0"></td>
+                  <td data-row="14" data-col="1">p=</td>
+                  <td data-row="14" data-col="2">p=</td>
+                </tr>
+                <tr>
+                  <td data-row="15" data-col="0">SD (Observations)</td>
+                  <td data-row="15" data-col="1">0.651 [  NA,   NA]</td>
+                  <td data-row="15" data-col="2">0.639 [  NA,   NA]</td>
+                </tr>
+                <tr>
+                  <td data-row="16" data-col="0"></td>
+                  <td data-row="16" data-col="1">p=</td>
+                  <td data-row="16" data-col="2">p=</td>
+                </tr>
+                <tr>
+                  <td data-row="17" data-col="0">Num.Obs.</td>
+                  <td data-row="17" data-col="1">4191</td>
+                  <td data-row="17" data-col="2">4191</td>
+                </tr>
+                <tr>
+                  <td data-row="18" data-col="0">R2 Marg.</td>
+                  <td data-row="18" data-col="1">0.174</td>
+                  <td data-row="18" data-col="2">0.203</td>
+                </tr>
+                <tr>
+                  <td data-row="19" data-col="0">R2 Cond.</td>
+                  <td data-row="19" data-col="1">0.560</td>
+                  <td data-row="19" data-col="2">0.575</td>
+                </tr>
+                <tr>
+                  <td data-row="20" data-col="0">ICC</td>
+                  <td data-row="20" data-col="1">0.5</td>
+                  <td data-row="20" data-col="2">0.5</td>
+                </tr>
+                <tr>
+                  <td data-row="21" data-col="0">Std.Errors</td>
+                  <td data-row="21" data-col="1">Custom</td>
+                  <td data-row="21" data-col="2">Custom</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->

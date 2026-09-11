@@ -1,0 +1,580 @@
+<!-- preamble start -->
+
+    <script>
+
+      function styleCell_lyf2l9lo2ipm5j6v5qb7(i, j, css_id) {
+          var table = document.getElementById("tinytable_lyf2l9lo2ipm5j6v5qb7");
+          var cell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+          if (cell) {
+              console.log(`Styling cell at (${i}, ${j}) with class ${css_id}`);
+              cell.classList.add(css_id);
+          } else {
+              console.warn(`Cell at (${i}, ${j}) not found.`);
+          }
+      }
+      function insertSpanRow(i, colspan, content) {
+        var table = document.getElementById('tinytable_lyf2l9lo2ipm5j6v5qb7');
+        // Find the row with data-row attribute matching i
+        var targetRow = table.querySelector(`tr [data-row="${i}"]`).closest('tr');
+        var newRow = table.insertRow(targetRow.rowIndex);
+        var newCell = newRow.insertCell(0);
+        newCell.setAttribute("colspan", colspan);
+        newCell.setAttribute("data-col", "0");
+        newCell.setAttribute("data-row", i - 1);
+        // newCell.innerText = content;
+        // this may be unsafe, but innerText does not interpret <br>
+        newCell.innerHTML = content;
+      }
+      function spanCell_lyf2l9lo2ipm5j6v5qb7(i, j, rowspan, colspan) {
+        var table = document.getElementById("tinytable_lyf2l9lo2ipm5j6v5qb7");
+        const targetCell = table.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+        if (!targetCell) {
+          console.warn(`Cell at (${i}, ${j}) not found.`);
+        }
+
+        // Get all cells that need to be removed
+        const cellsToRemove = [];
+        for (let r = 0; r < rowspan; r++) {
+          for (let c = 0; c < colspan; c++) {
+            if (r === 0 && c === 0) continue; // Skip the target cell
+            const cell = table.querySelector(`[data-row="${i + r}"][data-col="${j + c}"]`);
+            if (cell) {
+              cellsToRemove.push(cell);
+            }
+          }
+        }
+
+        // Remove all cells
+        cellsToRemove.forEach(cell => cell.remove());
+
+        // Set rowspan and colspan of the target cell if it exists
+        if (targetCell) {
+          targetCell.rowSpan = rowspan;
+          targetCell.colSpan = colspan;
+        }
+      }
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '79', j: 1 }, { i: '79', j: 2 }, { i: '79', j: 3 },  ], css_id: 'tinytable_css_o114m8qeljxanb4ueuzm',}, 
+          { positions: [ { i: '74', j: 2 }, { i: '74', j: 3 }, { i: '74', j: 1 },  ], css_id: 'tinytable_css_lcqhmu1nodavrwwvek9x',}, 
+          { positions: [ { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '8', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '16', j: 1 }, { i: '17', j: 1 }, { i: '18', j: 1 }, { i: '19', j: 1 }, { i: '20', j: 1 }, { i: '21', j: 1 }, { i: '22', j: 1 }, { i: '23', j: 1 }, { i: '24', j: 1 }, { i: '25', j: 1 }, { i: '26', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 }, { i: '29', j: 1 }, { i: '30', j: 1 }, { i: '31', j: 1 }, { i: '32', j: 1 }, { i: '33', j: 1 }, { i: '34', j: 1 }, { i: '35', j: 1 }, { i: '36', j: 1 }, { i: '37', j: 1 }, { i: '38', j: 1 }, { i: '39', j: 1 }, { i: '27', j: 1 }, { i: '28', j: 1 }, { i: '42', j: 1 }, { i: '43', j: 1 }, { i: '44', j: 1 }, { i: '45', j: 1 }, { i: '46', j: 1 }, { i: '47', j: 1 }, { i: '48', j: 1 }, { i: '49', j: 1 }, { i: '50', j: 1 }, { i: '51', j: 1 }, { i: '52', j: 1 }, { i: '53', j: 1 }, { i: '41', j: 1 }, { i: '55', j: 1 }, { i: '56', j: 1 }, { i: '57', j: 1 }, { i: '58', j: 1 }, { i: '59', j: 1 }, { i: '60', j: 1 }, { i: '61', j: 1 }, { i: '62', j: 1 }, { i: '63', j: 1 }, { i: '64', j: 1 }, { i: '65', j: 1 }, { i: '66', j: 1 }, { i: '54', j: 1 }, { i: '68', j: 1 }, { i: '69', j: 1 }, { i: '70', j: 1 }, { i: '71', j: 1 }, { i: '72', j: 1 }, { i: '73', j: 1 }, { i: '34', j: 2 }, { i: '75', j: 1 }, { i: '76', j: 1 }, { i: '77', j: 1 }, { i: '78', j: 1 }, { i: '39', j: 2 }, { i: '67', j: 1 }, { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '8', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '16', j: 2 }, { i: '17', j: 2 }, { i: '18', j: 2 }, { i: '19', j: 2 }, { i: '20', j: 2 }, { i: '21', j: 2 }, { i: '22', j: 2 }, { i: '23', j: 2 }, { i: '24', j: 2 }, { i: '25', j: 2 }, { i: '26', j: 2 }, { i: '27', j: 2 }, { i: '28', j: 2 }, { i: '29', j: 2 }, { i: '30', j: 2 }, { i: '31', j: 2 }, { i: '32', j: 2 }, { i: '33', j: 2 }, { i: '34', j: 3 }, { i: '35', j: 2 }, { i: '36', j: 2 }, { i: '37', j: 2 }, { i: '38', j: 2 }, { i: '39', j: 3 }, { i: '40', j: 1 }, { i: '41', j: 2 }, { i: '42', j: 2 }, { i: '43', j: 2 }, { i: '44', j: 2 }, { i: '45', j: 2 }, { i: '46', j: 2 }, { i: '47', j: 2 }, { i: '48', j: 2 }, { i: '49', j: 2 }, { i: '50', j: 2 }, { i: '51', j: 2 }, { i: '52', j: 2 }, { i: '53', j: 2 }, { i: '54', j: 2 }, { i: '55', j: 2 }, { i: '56', j: 2 }, { i: '57', j: 2 }, { i: '58', j: 2 }, { i: '59', j: 2 }, { i: '60', j: 2 }, { i: '61', j: 2 }, { i: '62', j: 2 }, { i: '63', j: 2 }, { i: '64', j: 2 }, { i: '65', j: 2 }, { i: '66', j: 2 }, { i: '67', j: 2 }, { i: '68', j: 2 }, { i: '69', j: 2 }, { i: '70', j: 2 }, { i: '71', j: 2 }, { i: '72', j: 2 }, { i: '73', j: 2 }, { i: '7', j: 3 }, { i: '75', j: 2 }, { i: '76', j: 2 }, { i: '77', j: 2 }, { i: '78', j: 2 }, { i: '12', j: 3 }, { i: '40', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '20', j: 3 }, { i: '8', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '25', j: 3 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 }, { i: '16', j: 3 }, { i: '17', j: 3 }, { i: '18', j: 3 }, { i: '19', j: 3 }, { i: '33', j: 3 }, { i: '21', j: 3 }, { i: '22', j: 3 }, { i: '23', j: 3 }, { i: '24', j: 3 }, { i: '38', j: 3 }, { i: '26', j: 3 }, { i: '27', j: 3 }, { i: '28', j: 3 }, { i: '29', j: 3 }, { i: '30', j: 3 }, { i: '31', j: 3 }, { i: '32', j: 3 }, { i: '46', j: 3 }, { i: '47', j: 3 }, { i: '35', j: 3 }, { i: '36', j: 3 }, { i: '37', j: 3 }, { i: '51', j: 3 }, { i: '52', j: 3 }, { i: '40', j: 3 }, { i: '41', j: 3 }, { i: '42', j: 3 }, { i: '43', j: 3 }, { i: '44', j: 3 }, { i: '45', j: 3 }, { i: '59', j: 3 }, { i: '60', j: 3 }, { i: '48', j: 3 }, { i: '49', j: 3 }, { i: '50', j: 3 }, { i: '64', j: 3 }, { i: '65', j: 3 }, { i: '53', j: 3 }, { i: '54', j: 3 }, { i: '55', j: 3 }, { i: '56', j: 3 }, { i: '57', j: 3 }, { i: '58', j: 3 }, { i: '72', j: 3 }, { i: '73', j: 3 }, { i: '61', j: 3 }, { i: '62', j: 3 }, { i: '63', j: 3 }, { i: '77', j: 3 }, { i: '78', j: 3 }, { i: '66', j: 3 }, { i: '67', j: 3 }, { i: '68', j: 3 }, { i: '69', j: 3 }, { i: '70', j: 3 }, { i: '71', j: 3 }, { i: '76', j: 3 }, { i: '75', j: 3 },  ], css_id: 'tinytable_css_52zzayws0tri9kcbsuw9',}, 
+          { positions: [ { i: '0', j: 1 }, { i: '0', j: 2 }, { i: '0', j: 3 },  ], css_id: 'tinytable_css_hmu5673egnyhaw77lbjw',}, 
+          { positions: [ { i: '79', j: 0 },  ], css_id: 'tinytable_css_vgoy1t9lyof8jbg2lhti',}, 
+          { positions: [ { i: '74', j: 0 },  ], css_id: 'tinytable_css_ii68ypflmrxky27i3ji6',}, 
+          { positions: [ { i: '1', j: 0 }, { i: '2', j: 0 }, { i: '3', j: 0 }, { i: '4', j: 0 }, { i: '5', j: 0 }, { i: '6', j: 0 }, { i: '7', j: 0 }, { i: '8', j: 0 }, { i: '9', j: 0 }, { i: '10', j: 0 }, { i: '11', j: 0 }, { i: '12', j: 0 }, { i: '13', j: 0 }, { i: '14', j: 0 }, { i: '15', j: 0 }, { i: '16', j: 0 }, { i: '17', j: 0 }, { i: '18', j: 0 }, { i: '19', j: 0 }, { i: '20', j: 0 }, { i: '21', j: 0 }, { i: '22', j: 0 }, { i: '23', j: 0 }, { i: '24', j: 0 }, { i: '25', j: 0 }, { i: '26', j: 0 }, { i: '27', j: 0 }, { i: '28', j: 0 }, { i: '29', j: 0 }, { i: '30', j: 0 }, { i: '31', j: 0 }, { i: '32', j: 0 }, { i: '33', j: 0 }, { i: '34', j: 0 }, { i: '35', j: 0 }, { i: '36', j: 0 }, { i: '37', j: 0 }, { i: '38', j: 0 }, { i: '39', j: 0 }, { i: '40', j: 0 }, { i: '41', j: 0 }, { i: '42', j: 0 }, { i: '43', j: 0 }, { i: '44', j: 0 }, { i: '45', j: 0 }, { i: '46', j: 0 }, { i: '47', j: 0 }, { i: '48', j: 0 }, { i: '49', j: 0 }, { i: '50', j: 0 }, { i: '51', j: 0 }, { i: '52', j: 0 }, { i: '53', j: 0 }, { i: '54', j: 0 }, { i: '55', j: 0 }, { i: '56', j: 0 }, { i: '57', j: 0 }, { i: '58', j: 0 }, { i: '59', j: 0 }, { i: '60', j: 0 }, { i: '61', j: 0 }, { i: '62', j: 0 }, { i: '63', j: 0 }, { i: '64', j: 0 }, { i: '65', j: 0 }, { i: '66', j: 0 }, { i: '67', j: 0 }, { i: '68', j: 0 }, { i: '69', j: 0 }, { i: '70', j: 0 }, { i: '71', j: 0 }, { i: '72', j: 0 }, { i: '73', j: 0 }, { i: '78', j: 0 }, { i: '75', j: 0 }, { i: '76', j: 0 }, { i: '77', j: 0 },  ], css_id: 'tinytable_css_ypzk58ilsf1nt5tieldm',}, 
+          { positions: [ { i: '0', j: 0 },  ], css_id: 'tinytable_css_0zri8tgl5kkvcg151faz',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  styleCell_lyf2l9lo2ipm5j6v5qb7(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    </script>
+
+    <style>
+      /* tinytable css entries after */
+      .table td.tinytable_css_o114m8qeljxanb4ueuzm, .table th.tinytable_css_o114m8qeljxanb4ueuzm { text-align: center; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_lcqhmu1nodavrwwvek9x, .table th.tinytable_css_lcqhmu1nodavrwwvek9x { text-align: center; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_52zzayws0tri9kcbsuw9, .table th.tinytable_css_52zzayws0tri9kcbsuw9 { text-align: center; }
+      .table td.tinytable_css_hmu5673egnyhaw77lbjw, .table th.tinytable_css_hmu5673egnyhaw77lbjw { text-align: center; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+      .table td.tinytable_css_vgoy1t9lyof8jbg2lhti, .table th.tinytable_css_vgoy1t9lyof8jbg2lhti { text-align: left; border-bottom: solid #d3d8dc 0.1em; }
+      .table td.tinytable_css_ii68ypflmrxky27i3ji6, .table th.tinytable_css_ii68ypflmrxky27i3ji6 { text-align: left; border-bottom: solid black 0.05em; }
+      .table td.tinytable_css_ypzk58ilsf1nt5tieldm, .table th.tinytable_css_ypzk58ilsf1nt5tieldm { text-align: left; }
+      .table td.tinytable_css_0zri8tgl5kkvcg151faz, .table th.tinytable_css_0zri8tgl5kkvcg151faz { text-align: left; border-top: solid #d3d8dc 0.1em; border-bottom: solid #d3d8dc 0.05em; }
+    </style>
+    <div class="container">
+      <table class="table table-borderless" id="tinytable_lyf2l9lo2ipm5j6v5qb7" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'>
+        <thead>
+        
+              <tr>
+                <th scope="col" data-row="0" data-col="0"> </th>
+                <th scope="col" data-row="0" data-col="1">(1)</th>
+                <th scope="col" data-row="0" data-col="2">(2)</th>
+                <th scope="col" data-row="0" data-col="3">(3)</th>
+              </tr>
+        </thead>
+        <tfoot><tr><td colspan='4'>Values in square brackets represent 95% confidence intervals based on CR2 cluster-robust standard errors, with clustering at the legislator level.</td></tr></tfoot>
+        <tbody>
+                <tr>
+                  <td data-row="1" data-col="0">(Intercept)</td>
+                  <td data-row="1" data-col="1">-1.045 [-1.163, -0.927]</td>
+                  <td data-row="1" data-col="2">-0.816 [-0.924, -0.707]</td>
+                  <td data-row="1" data-col="3">0.019 [-0.055, 0.094]</td>
+                </tr>
+                <tr>
+                  <td data-row="2" data-col="0"></td>
+                  <td data-row="2" data-col="1">p=1.358e-67</td>
+                  <td data-row="2" data-col="2">p=6.592e-49</td>
+                  <td data-row="2" data-col="3">p=0.610</td>
+                </tr>
+                <tr>
+                  <td data-row="3" data-col="0">ideology</td>
+                  <td data-row="3" data-col="1">-0.116 [-0.133, -0.098]</td>
+                  <td data-row="3" data-col="2">-0.072 [-0.086, -0.057]</td>
+                  <td data-row="3" data-col="3">-0.148 [-0.175, -0.121]</td>
+                </tr>
+                <tr>
+                  <td data-row="4" data-col="0"></td>
+                  <td data-row="4" data-col="1">p=1.117e-38</td>
+                  <td data-row="4" data-col="2">p=1.570e-21</td>
+                  <td data-row="4" data-col="3">p=1.151e-26</td>
+                </tr>
+                <tr>
+                  <td data-row="5" data-col="0">republican</td>
+                  <td data-row="5" data-col="1">0.063 [0.029, 0.096]</td>
+                  <td data-row="5" data-col="2">0.016 [-0.012, 0.044]</td>
+                  <td data-row="5" data-col="3">-0.062 [-0.111, -0.012]</td>
+                </tr>
+                <tr>
+                  <td data-row="6" data-col="0"></td>
+                  <td data-row="6" data-col="1">p=2.443e-04</td>
+                  <td data-row="6" data-col="2">p=0.269</td>
+                  <td data-row="6" data-col="3">p=0.014</td>
+                </tr>
+                <tr>
+                  <td data-row="7" data-col="0">senate</td>
+                  <td data-row="7" data-col="1">-0.065 [-0.101, -0.029]</td>
+                  <td data-row="7" data-col="2">-0.088 [-0.120, -0.055]</td>
+                  <td data-row="7" data-col="3">-0.063 [-0.120, -0.006]</td>
+                </tr>
+                <tr>
+                  <td data-row="8" data-col="0"></td>
+                  <td data-row="8" data-col="1">p=4.181e-04</td>
+                  <td data-row="8" data-col="2">p=1.013e-07</td>
+                  <td data-row="8" data-col="3">p=0.030</td>
+                </tr>
+                <tr>
+                  <td data-row="9" data-col="0">chamber_opposition</td>
+                  <td data-row="9" data-col="1"></td>
+                  <td data-row="9" data-col="2">-0.139 [-0.155, -0.123]</td>
+                  <td data-row="9" data-col="3">-0.105 [-0.131, -0.080]</td>
+                </tr>
+                <tr>
+                  <td data-row="10" data-col="0"></td>
+                  <td data-row="10" data-col="1"></td>
+                  <td data-row="10" data-col="2">p=5.295e-63</td>
+                  <td data-row="10" data-col="3">p=5.072e-16</td>
+                </tr>
+                <tr>
+                  <td data-row="11" data-col="0">president_opposition</td>
+                  <td data-row="11" data-col="1"></td>
+                  <td data-row="11" data-col="2">-0.016 [-0.032, -0.001]</td>
+                  <td data-row="11" data-col="3">-0.080 [-0.103, -0.057]</td>
+                </tr>
+                <tr>
+                  <td data-row="12" data-col="0"></td>
+                  <td data-row="12" data-col="1"></td>
+                  <td data-row="12" data-col="2">p=0.036</td>
+                  <td data-row="12" data-col="3">p=1.370e-11</td>
+                </tr>
+                <tr>
+                  <td data-row="13" data-col="0">female</td>
+                  <td data-row="13" data-col="1"></td>
+                  <td data-row="13" data-col="2">0.009 [-0.048, 0.065]</td>
+                  <td data-row="13" data-col="3">0.058 [-0.014, 0.130]</td>
+                </tr>
+                <tr>
+                  <td data-row="14" data-col="0"></td>
+                  <td data-row="14" data-col="1"></td>
+                  <td data-row="14" data-col="2">p=0.768</td>
+                  <td data-row="14" data-col="3">p=0.116</td>
+                </tr>
+                <tr>
+                  <td data-row="15" data-col="0">prop_topic_Agriculture</td>
+                  <td data-row="15" data-col="1"></td>
+                  <td data-row="15" data-col="2">0.187 [0.167, 0.207]</td>
+                  <td data-row="15" data-col="3">0.168 [0.144, 0.192]</td>
+                </tr>
+                <tr>
+                  <td data-row="16" data-col="0"></td>
+                  <td data-row="16" data-col="1"></td>
+                  <td data-row="16" data-col="2">p=6.780e-74</td>
+                  <td data-row="16" data-col="3">p=9.421e-43</td>
+                </tr>
+                <tr>
+                  <td data-row="17" data-col="0">prop_topic_Civil.Rights</td>
+                  <td data-row="17" data-col="1"></td>
+                  <td data-row="17" data-col="2">0.047 [0.032, 0.063]</td>
+                  <td data-row="17" data-col="3">0.077 [0.052, 0.102]</td>
+                </tr>
+                <tr>
+                  <td data-row="18" data-col="0"></td>
+                  <td data-row="18" data-col="1"></td>
+                  <td data-row="18" data-col="2">p=5.524e-09</td>
+                  <td data-row="18" data-col="3">p=1.131e-09</td>
+                </tr>
+                <tr>
+                  <td data-row="19" data-col="0">prop_topic_Defense</td>
+                  <td data-row="19" data-col="1"></td>
+                  <td data-row="19" data-col="2">0.349 [0.328, 0.370]</td>
+                  <td data-row="19" data-col="3">0.397 [0.363, 0.432]</td>
+                </tr>
+                <tr>
+                  <td data-row="20" data-col="0"></td>
+                  <td data-row="20" data-col="1"></td>
+                  <td data-row="20" data-col="2">p=3.007e-233</td>
+                  <td data-row="20" data-col="3">p=3.084e-110</td>
+                </tr>
+                <tr>
+                  <td data-row="21" data-col="0">prop_topic_Domestic.Commerce</td>
+                  <td data-row="21" data-col="1"></td>
+                  <td data-row="21" data-col="2">0.143 [0.128, 0.158]</td>
+                  <td data-row="21" data-col="3">0.211 [0.188, 0.234]</td>
+                </tr>
+                <tr>
+                  <td data-row="22" data-col="0"></td>
+                  <td data-row="22" data-col="1"></td>
+                  <td data-row="22" data-col="2">p=2.480e-78</td>
+                  <td data-row="22" data-col="3">p=3.073e-70</td>
+                </tr>
+                <tr>
+                  <td data-row="23" data-col="0">prop_topic_Education</td>
+                  <td data-row="23" data-col="1"></td>
+                  <td data-row="23" data-col="2">0.149 [0.136, 0.162]</td>
+                  <td data-row="23" data-col="3">0.244 [0.221, 0.267]</td>
+                </tr>
+                <tr>
+                  <td data-row="24" data-col="0"></td>
+                  <td data-row="24" data-col="1"></td>
+                  <td data-row="24" data-col="2">p=4.340e-114</td>
+                  <td data-row="24" data-col="3">p=1.252e-95</td>
+                </tr>
+                <tr>
+                  <td data-row="25" data-col="0">prop_topic_Energy</td>
+                  <td data-row="25" data-col="1"></td>
+                  <td data-row="25" data-col="2">0.169 [0.156, 0.182]</td>
+                  <td data-row="25" data-col="3">0.244 [0.219, 0.268]</td>
+                </tr>
+                <tr>
+                  <td data-row="26" data-col="0"></td>
+                  <td data-row="26" data-col="1"></td>
+                  <td data-row="26" data-col="2">p=7.450e-139</td>
+                  <td data-row="26" data-col="3">p=2.007e-83</td>
+                </tr>
+                <tr>
+                  <td data-row="27" data-col="0">prop_topic_Environment</td>
+                  <td data-row="27" data-col="1"></td>
+                  <td data-row="27" data-col="2">0.138 [0.123, 0.152]</td>
+                  <td data-row="27" data-col="3">0.223 [0.202, 0.244]</td>
+                </tr>
+                <tr>
+                  <td data-row="28" data-col="0"></td>
+                  <td data-row="28" data-col="1"></td>
+                  <td data-row="28" data-col="2">p=1.559e-78</td>
+                  <td data-row="28" data-col="3">p=1.354e-93</td>
+                </tr>
+                <tr>
+                  <td data-row="29" data-col="0">prop_topic_Foreign.Trade</td>
+                  <td data-row="29" data-col="1"></td>
+                  <td data-row="29" data-col="2">0.099 [0.086, 0.111]</td>
+                  <td data-row="29" data-col="3">0.095 [0.076, 0.113]</td>
+                </tr>
+                <tr>
+                  <td data-row="30" data-col="0"></td>
+                  <td data-row="30" data-col="1"></td>
+                  <td data-row="30" data-col="2">p=1.318e-52</td>
+                  <td data-row="30" data-col="3">p=1.048e-23</td>
+                </tr>
+                <tr>
+                  <td data-row="31" data-col="0">prop_topic_Government.Operations</td>
+                  <td data-row="31" data-col="1"></td>
+                  <td data-row="31" data-col="2">0.289 [0.259, 0.318]</td>
+                  <td data-row="31" data-col="3">0.257 [0.215, 0.299]</td>
+                </tr>
+                <tr>
+                  <td data-row="32" data-col="0"></td>
+                  <td data-row="32" data-col="1"></td>
+                  <td data-row="32" data-col="2">p=5.418e-81</td>
+                  <td data-row="32" data-col="3">p=2.543e-33</td>
+                </tr>
+                <tr>
+                  <td data-row="33" data-col="0">prop_topic_Health</td>
+                  <td data-row="33" data-col="1"></td>
+                  <td data-row="33" data-col="2">0.177 [0.161, 0.193]</td>
+                  <td data-row="33" data-col="3">0.283 [0.254, 0.311]</td>
+                </tr>
+                <tr>
+                  <td data-row="34" data-col="0"></td>
+                  <td data-row="34" data-col="1"></td>
+                  <td data-row="34" data-col="2">p=6.580e-101</td>
+                  <td data-row="34" data-col="3">p=1.006e-83</td>
+                </tr>
+                <tr>
+                  <td data-row="35" data-col="0">prop_topic_Housing</td>
+                  <td data-row="35" data-col="1"></td>
+                  <td data-row="35" data-col="2">0.077 [0.066, 0.088]</td>
+                  <td data-row="35" data-col="3">0.081 [0.066, 0.096]</td>
+                </tr>
+                <tr>
+                  <td data-row="36" data-col="0"></td>
+                  <td data-row="36" data-col="1"></td>
+                  <td data-row="36" data-col="2">p=1.461e-41</td>
+                  <td data-row="36" data-col="3">p=3.150e-26</td>
+                </tr>
+                <tr>
+                  <td data-row="37" data-col="0">prop_topic_Immigration</td>
+                  <td data-row="37" data-col="1"></td>
+                  <td data-row="37" data-col="2">0.033 [0.019, 0.046]</td>
+                  <td data-row="37" data-col="3">0.027 [0.011, 0.043]</td>
+                </tr>
+                <tr>
+                  <td data-row="38" data-col="0"></td>
+                  <td data-row="38" data-col="1"></td>
+                  <td data-row="38" data-col="2">p=1.123e-06</td>
+                  <td data-row="38" data-col="3">p=8.355e-04</td>
+                </tr>
+                <tr>
+                  <td data-row="39" data-col="0">prop_topic_International.Affairs</td>
+                  <td data-row="39" data-col="1"></td>
+                  <td data-row="39" data-col="2">0.134 [0.114, 0.155]</td>
+                  <td data-row="39" data-col="3">0.154 [0.122, 0.186]</td>
+                </tr>
+                <tr>
+                  <td data-row="40" data-col="0"></td>
+                  <td data-row="40" data-col="1"></td>
+                  <td data-row="40" data-col="2">p=1.088e-37</td>
+                  <td data-row="40" data-col="3">p=7.602e-21</td>
+                </tr>
+                <tr>
+                  <td data-row="41" data-col="0">prop_topic_Labor</td>
+                  <td data-row="41" data-col="1"></td>
+                  <td data-row="41" data-col="2">0.093 [0.075, 0.111]</td>
+                  <td data-row="41" data-col="3">0.104 [0.084, 0.123]</td>
+                </tr>
+                <tr>
+                  <td data-row="42" data-col="0"></td>
+                  <td data-row="42" data-col="1"></td>
+                  <td data-row="42" data-col="2">p=1.682e-23</td>
+                  <td data-row="42" data-col="3">p=1.415e-25</td>
+                </tr>
+                <tr>
+                  <td data-row="43" data-col="0">prop_topic_Law.and.Crime</td>
+                  <td data-row="43" data-col="1"></td>
+                  <td data-row="43" data-col="2">0.174 [0.156, 0.192]</td>
+                  <td data-row="43" data-col="3">0.138 [0.108, 0.168]</td>
+                </tr>
+                <tr>
+                  <td data-row="44" data-col="0"></td>
+                  <td data-row="44" data-col="1"></td>
+                  <td data-row="44" data-col="2">p=1.051e-78</td>
+                  <td data-row="44" data-col="3">p=3.274e-19</td>
+                </tr>
+                <tr>
+                  <td data-row="45" data-col="0">prop_topic_Macroeconomics</td>
+                  <td data-row="45" data-col="1"></td>
+                  <td data-row="45" data-col="2">0.082 [0.068, 0.097]</td>
+                  <td data-row="45" data-col="3">0.080 [0.052, 0.109]</td>
+                </tr>
+                <tr>
+                  <td data-row="46" data-col="0"></td>
+                  <td data-row="46" data-col="1"></td>
+                  <td data-row="46" data-col="2">p=4.314e-28</td>
+                  <td data-row="46" data-col="3">p=3.667e-08</td>
+                </tr>
+                <tr>
+                  <td data-row="47" data-col="0">prop_topic_Public.Lands</td>
+                  <td data-row="47" data-col="1"></td>
+                  <td data-row="47" data-col="2">0.366 [0.347, 0.385]</td>
+                  <td data-row="47" data-col="3">0.309 [0.283, 0.335]</td>
+                </tr>
+                <tr>
+                  <td data-row="48" data-col="0"></td>
+                  <td data-row="48" data-col="1"></td>
+                  <td data-row="48" data-col="2">p=6.524e-308</td>
+                  <td data-row="48" data-col="3">p=3.100e-117</td>
+                </tr>
+                <tr>
+                  <td data-row="49" data-col="0">prop_topic_Social.Welfare</td>
+                  <td data-row="49" data-col="1"></td>
+                  <td data-row="49" data-col="2">0.063 [0.052, 0.073]</td>
+                  <td data-row="49" data-col="3">0.106 [0.089, 0.124]</td>
+                </tr>
+                <tr>
+                  <td data-row="50" data-col="0"></td>
+                  <td data-row="50" data-col="1"></td>
+                  <td data-row="50" data-col="2">p=2.100e-30</td>
+                  <td data-row="50" data-col="3">p=2.974e-33</td>
+                </tr>
+                <tr>
+                  <td data-row="51" data-col="0">prop_topic_Technology</td>
+                  <td data-row="51" data-col="1"></td>
+                  <td data-row="51" data-col="2">0.154 [0.131, 0.177]</td>
+                  <td data-row="51" data-col="3">0.247 [0.226, 0.269]</td>
+                </tr>
+                <tr>
+                  <td data-row="52" data-col="0"></td>
+                  <td data-row="52" data-col="1"></td>
+                  <td data-row="52" data-col="2">p=6.004e-39</td>
+                  <td data-row="52" data-col="3">p=4.609e-110</td>
+                </tr>
+                <tr>
+                  <td data-row="53" data-col="0">prop_topic_Transportation</td>
+                  <td data-row="53" data-col="1"></td>
+                  <td data-row="53" data-col="2">0.234 [0.221, 0.248]</td>
+                  <td data-row="53" data-col="3">0.243 [0.222, 0.265]</td>
+                </tr>
+                <tr>
+                  <td data-row="54" data-col="0"></td>
+                  <td data-row="54" data-col="1"></td>
+                  <td data-row="54" data-col="2">p=2.224e-236</td>
+                  <td data-row="54" data-col="3">p=1.711e-105</td>
+                </tr>
+                <tr>
+                  <td data-row="55" data-col="0">seniority_terms</td>
+                  <td data-row="55" data-col="1"></td>
+                  <td data-row="55" data-col="2"></td>
+                  <td data-row="55" data-col="3">0.005 [-0.020, 0.030]</td>
+                </tr>
+                <tr>
+                  <td data-row="56" data-col="0"></td>
+                  <td data-row="56" data-col="1"></td>
+                  <td data-row="56" data-col="2"></td>
+                  <td data-row="56" data-col="3">p=0.698</td>
+                </tr>
+                <tr>
+                  <td data-row="57" data-col="0">first_term</td>
+                  <td data-row="57" data-col="1"></td>
+                  <td data-row="57" data-col="2"></td>
+                  <td data-row="57" data-col="3">0.023 [-0.013, 0.059]</td>
+                </tr>
+                <tr>
+                  <td data-row="58" data-col="0"></td>
+                  <td data-row="58" data-col="1"></td>
+                  <td data-row="58" data-col="2"></td>
+                  <td data-row="58" data-col="3">p=0.208</td>
+                </tr>
+                <tr>
+                  <td data-row="59" data-col="0">committee_chair</td>
+                  <td data-row="59" data-col="1"></td>
+                  <td data-row="59" data-col="2"></td>
+                  <td data-row="59" data-col="3">0.371 [0.311, 0.431]</td>
+                </tr>
+                <tr>
+                  <td data-row="60" data-col="0"></td>
+                  <td data-row="60" data-col="1"></td>
+                  <td data-row="60" data-col="2"></td>
+                  <td data-row="60" data-col="3">p=1.520e-33</td>
+                </tr>
+                <tr>
+                  <td data-row="61" data-col="0">subcommittee_chair</td>
+                  <td data-row="61" data-col="1"></td>
+                  <td data-row="61" data-col="2"></td>
+                  <td data-row="61" data-col="3">0.240 [0.205, 0.274]</td>
+                </tr>
+                <tr>
+                  <td data-row="62" data-col="0"></td>
+                  <td data-row="62" data-col="1"></td>
+                  <td data-row="62" data-col="2"></td>
+                  <td data-row="62" data-col="3">p=6.718e-42</td>
+                </tr>
+                <tr>
+                  <td data-row="63" data-col="0">majority_party_leadership</td>
+                  <td data-row="63" data-col="1"></td>
+                  <td data-row="63" data-col="2"></td>
+                  <td data-row="63" data-col="3">-0.017 [-0.097, 0.064]</td>
+                </tr>
+                <tr>
+                  <td data-row="64" data-col="0"></td>
+                  <td data-row="64" data-col="1"></td>
+                  <td data-row="64" data-col="2"></td>
+                  <td data-row="64" data-col="3">p=0.685</td>
+                </tr>
+                <tr>
+                  <td data-row="65" data-col="0">minority_party_leadership</td>
+                  <td data-row="65" data-col="1"></td>
+                  <td data-row="65" data-col="2"></td>
+                  <td data-row="65" data-col="3">0.133 [0.047, 0.218]</td>
+                </tr>
+                <tr>
+                  <td data-row="66" data-col="0"></td>
+                  <td data-row="66" data-col="1"></td>
+                  <td data-row="66" data-col="2"></td>
+                  <td data-row="66" data-col="3">p=0.002</td>
+                </tr>
+                <tr>
+                  <td data-row="67" data-col="0">vote_share_lastelection</td>
+                  <td data-row="67" data-col="1"></td>
+                  <td data-row="67" data-col="2"></td>
+                  <td data-row="67" data-col="3">0.016 [0.001, 0.031]</td>
+                </tr>
+                <tr>
+                  <td data-row="68" data-col="0"></td>
+                  <td data-row="68" data-col="1"></td>
+                  <td data-row="68" data-col="2"></td>
+                  <td data-row="68" data-col="3">p=0.042</td>
+                </tr>
+                <tr>
+                  <td data-row="69" data-col="0">served_instateleg</td>
+                  <td data-row="69" data-col="1"></td>
+                  <td data-row="69" data-col="2"></td>
+                  <td data-row="69" data-col="3">-0.007 [-0.053, 0.040]</td>
+                </tr>
+                <tr>
+                  <td data-row="70" data-col="0"></td>
+                  <td data-row="70" data-col="1"></td>
+                  <td data-row="70" data-col="2"></td>
+                  <td data-row="70" data-col="3">p=0.781</td>
+                </tr>
+                <tr>
+                  <td data-row="71" data-col="0">SD (Intercept bioguide_id)</td>
+                  <td data-row="71" data-col="1">0.630 [  NA,   NA]</td>
+                  <td data-row="71" data-col="2">0.504 [  NA,   NA]</td>
+                  <td data-row="71" data-col="3">0.479 [  NA,   NA]</td>
+                </tr>
+                <tr>
+                  <td data-row="72" data-col="0"></td>
+                  <td data-row="72" data-col="1">p=</td>
+                  <td data-row="72" data-col="2">p=</td>
+                  <td data-row="72" data-col="3">p=</td>
+                </tr>
+                <tr>
+                  <td data-row="73" data-col="0">SD (Observations)</td>
+                  <td data-row="73" data-col="1">0.713 [  NA,   NA]</td>
+                  <td data-row="73" data-col="2">0.649 [  NA,   NA]</td>
+                  <td data-row="73" data-col="3">0.599 [  NA,   NA]</td>
+                </tr>
+                <tr>
+                  <td data-row="74" data-col="0"></td>
+                  <td data-row="74" data-col="1">p=</td>
+                  <td data-row="74" data-col="2">p=</td>
+                  <td data-row="74" data-col="3">p=</td>
+                </tr>
+                <tr>
+                  <td data-row="75" data-col="0">Num.Obs.</td>
+                  <td data-row="75" data-col="1">37686</td>
+                  <td data-row="75" data-col="2">37686</td>
+                  <td data-row="75" data-col="3">13682</td>
+                </tr>
+                <tr>
+                  <td data-row="76" data-col="0">R2 Marg.</td>
+                  <td data-row="76" data-col="1">0.156</td>
+                  <td data-row="76" data-col="2">0.339</td>
+                  <td data-row="76" data-col="3">0.384</td>
+                </tr>
+                <tr>
+                  <td data-row="77" data-col="0">R2 Cond.</td>
+                  <td data-row="77" data-col="1">0.526</td>
+                  <td data-row="77" data-col="2">0.587</td>
+                  <td data-row="77" data-col="3">0.625</td>
+                </tr>
+                <tr>
+                  <td data-row="78" data-col="0">ICC</td>
+                  <td data-row="78" data-col="1">0.4</td>
+                  <td data-row="78" data-col="2">0.4</td>
+                  <td data-row="78" data-col="3">0.4</td>
+                </tr>
+                <tr>
+                  <td data-row="79" data-col="0">Std.Errors</td>
+                  <td data-row="79" data-col="1">Custom</td>
+                  <td data-row="79" data-col="2">Custom</td>
+                  <td data-row="79" data-col="3">Custom</td>
+                </tr>
+        </tbody>
+      </table>
+    </div>
+<!-- hack to avoid NA insertion in last line -->

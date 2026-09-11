@@ -1,0 +1,669 @@
+---
+title: "Analysis of EMI at the individual level"
+author: "Segun Aroyehun"
+output: pdf_document
+---
+```{r}
+library(dplyr)
+library(zoo)
+library(Hmisc)
+library(lmtest)
+library(tseries)
+library(ggplot2)
+library(ggrepel)
+library(stargazer)
+library(car)
+library(sandwich)
+library(clubSandwich)
+library(lme4)
+library(lmerTest)
+library(ggeffects)
+library(margins)
+library(marginaleffects)
+library(boot)
+library(kableExtra)
+library(modelsummary)
+library(visreg)
+library(tinytable)
+
+set.seed(1234)
+setwd(".")
+
+
+output_path <- "../output"
+f <- function(x) format(x, digits = 3, nsmall = 2)
+f_est <- function(x) formatC(x, format="f", digits=3)
+f_p <- function(x) {
+  ifelse(
+    x < 0.001,
+    formatC(x, format = "e", digits = 3),
+    formatC(x, format = "f", digits = 3)
+  )
+}
+
+
+df <- read.csv("../data/memberlevel_sbertllms.csv")
+df$emi <- df$rating_emb_pool_z
+df$ideology <- abs(df$nominate_dim1)
+
+df$bioguide_id <- factor(df$bioguide_id)
+df$congress <- factor(df$congress)
+df$republican <- ifelse(
+df$party_name == "Republican Party",
+  1,
+  0
+)
+
+df$female <- ifelse(
+df$gender == "F",
+  1,
+  0
+)
+
+df$senate <- ifelse(
+df$chamber == "Senate",
+  1,
+  0
+)
+
+cor.test(df$emi, df$nominate_dim1_absfloordistance)
+cor.test(df$emi, df$ideology)
+
+
+vars <- c(
+  "emi", "nominate_dim1_absfloordistance", "congress",
+  "gender", "chamber_opposition", "bioguide_id",
+  "republican", "senate", "ideology",
+  grep("^prop_topic_", names(df), value = TRUE)
+)
+
+df <- df[complete.cases(df[, vars]), ]
+
+vars_to_scale <- c(
+  "emi",
+  "nominate_dim1_absfloordistance",
+  "ideology",
+  grep("^prop_topic_", names(df), value = TRUE)
+)
+
+df <- df |>
+  mutate(
+    across(
+      all_of(vars_to_scale),
+      ~ as.numeric(scale(.x))
+    )
+  )
+
+emi_model_base <- lmer(emi ~ 1 + ideology + congress 
+                + republican 
+                + senate
+                + (1|bioguide_id),
+                data = df )
+summary(emi_model_base)
+vif(emi_model_base)
+
+emi_model <- lmer(emi ~ 1 + ideology + congress 
+                + chamber_opposition + president_opposition +  republican 
+                + female + senate
+                + prop_topic_Agriculture + prop_topic_Civil.Rights
+                + prop_topic_Defense + prop_topic_Domestic.Commerce
+                + prop_topic_Education + prop_topic_Energy
+                + prop_topic_Environment + prop_topic_Foreign.Trade
+                + prop_topic_Government.Operations + prop_topic_Health
+                + prop_topic_Housing + prop_topic_Immigration
+                + prop_topic_International.Affairs + prop_topic_Labor
+                + prop_topic_Law.and.Crime + prop_topic_Macroeconomics
+                + prop_topic_Public.Lands + prop_topic_Social.Welfare
+                + prop_topic_Technology + prop_topic_Transportation
+                + (1|bioguide_id),
+                data = df )
+summary(emi_model)
+vif(emi_model)
+
+vars_morecontrols <- c(
+  "emi", "nominate_dim1_absfloordistance", "congress", "ideology",
+  "gender", "chamber_opposition", "bioguide_id", "republican", "senate",
+  "seniority_terms", "first_term",
+  "committee_chair", "subcommittee_chair",
+  "majority_party_leadership", "minority_party_leadership",
+  "vote_share_lastelection", "served_instateleg", "log_les",
+  grep("^prop_topic_", names(df), value = TRUE)
+)
+
+df_morecontrols1973 <- df[complete.cases(df[, vars_morecontrols]), ]
+# "log_speechcount", "log_tokencount",
+vars_to_scale <- c(
+  "emi",
+  "nominate_dim1_absfloordistance",
+  "ideology",
+  "seniority_terms",
+  "vote_share_lastelection",
+  "log_les",
+  grep("^prop_topic_", names(df), value = TRUE)
+)
+
+df_morecontrols1973 <- df_morecontrols1973 |>
+  mutate(
+    across(
+      all_of(vars_to_scale),
+      ~ as.numeric(scale(.x))
+    )
+  )
+
+emi_model_morecontrols1973 <- lmer(emi ~ 1 + ideology + congress 
+                + chamber_opposition + president_opposition + republican 
+                + female + senate
+                + seniority_terms + first_term 
+                + committee_chair + subcommittee_chair
+                + majority_party_leadership + minority_party_leadership
+                + vote_share_lastelection + served_instateleg
+                + prop_topic_Agriculture + prop_topic_Civil.Rights
+                + prop_topic_Defense + prop_topic_Domestic.Commerce
+                + prop_topic_Education + prop_topic_Energy
+                + prop_topic_Environment + prop_topic_Foreign.Trade
+                + prop_topic_Government.Operations + prop_topic_Health
+                + prop_topic_Housing + prop_topic_Immigration
+                + prop_topic_International.Affairs + prop_topic_Labor
+                + prop_topic_Law.and.Crime + prop_topic_Macroeconomics
+                + prop_topic_Public.Lands + prop_topic_Social.Welfare
+                + prop_topic_Technology + prop_topic_Transportation
+                + (1|bioguide_id),
+                data = df_morecontrols1973)
+
+summary(emi_model_morecontrols1973)
+vif(emi_model_morecontrols1973)
+
+# coef plot
+
+vcov_full <- vcovCR(
+  emi_model_morecontrols1973,
+  cluster = df_morecontrols1973$bioguide_id,
+  type = "CR2"
+)
+
+focal_terms <- c(
+  "ideology",
+  "vote_share_lastelection",
+  "chamber_opposition",
+  "female"
+)
+
+plot_df <- modelplot(
+  list("Full model" = emi_model_morecontrols1973),
+  vcov = list(vcov_full),
+  conf_level = 0.95,
+  draw = FALSE
+) |>
+  filter(term %in% focal_terms) |>
+  mutate(
+    label = dplyr::recode(
+      term,
+      ideology = "Ideological extremity",
+      vote_share_lastelection = "Vote share",
+      chamber_opposition = "Opposition",
+      female = "Female"
+    ),
+    label = factor(
+      label,
+      levels = c(
+        "Female",
+        "Opposition",
+        "Vote share",
+        "Ideological extremity"
+      )
+    )
+  )
+
+p <- ggplot(
+  plot_df,
+  aes(
+    x = estimate,
+    y = label,
+    xmin = conf.low,
+    xmax = conf.high
+  )
+) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  geom_errorbarh(height = 0.12, linewidth = 0.7) +
+  geom_point(size = 2.8) +
+  labs(
+    x = "Coefficient estimate",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12)
+  
+ggsave(
+  filename = "../output/EMI_characteristics-coeff_plot.pdf",
+  plot = p,
+  width = 8,
+  height = 4.5,
+  units = "in"
+)
+
+ggsave(
+  filename = "../output/EMI_characteristics-coeff_plot.png",
+  plot = p,
+  width = 8,
+  height = 4.5,
+  units = "in",
+  dpi = 300
+)
+
+modelsummary(
+  list(emi_model_base, emi_model, emi_model_morecontrols1973),
+  vcov =list(vcovCR(emi_model_base, cluster = df$bioguide_id, type = "CR2"),
+             vcovCR(emi_model, cluster = df$bioguide_id, type = "CR2"),
+             vcovCR(emi_model_morecontrols1973, cluster = df_morecontrols1973$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^congress",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="../output/EMI-xteristics-meff_summary.html",
+  fmt = NULL,
+  estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  statistic = "p={f_p(p.value)}", conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on CR2 cluster-robust standard errors, with clustering at the legislator level."
+)
+
+
+tex <- modelsummary(
+  list(emi_model_base, emi_model, emi_model_morecontrols1973),
+  vcov =list(vcovCR(emi_model_base, cluster = df$bioguide_id, type = "CR2"),
+             vcovCR(emi_model, cluster = df$bioguide_id, type = "CR2"),
+             vcovCR(emi_model_morecontrols1973, cluster = df_morecontrols1973$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^congress",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output = "tinytable",
+  fmt = NULL,
+  estimate = "{f_est(estimate)}",
+  statistic = c(
+    "[{f_est(conf.low)}, {f_est(conf.high)}]",
+    "p={f_p(p.value)}"
+  ),
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)|>
+  theme_tt("tabular")
+  save_tt(tex, "../output/EMI-xteristics-meff_summary.tex", overwrite = TRUE)
+```
+# les model
+```{r}
+les_model_base <- lmer(log_les ~ 1 + ideology + congress 
+                + chamber_opposition + president_opposition + republican 
+                + female + senate
+                + latino_a
+                + african_american
+                + seniority_terms + first_term 
+                + committee_chair + subcommittee_chair
+                + majority_party_leadership + minority_party_leadership
+                + vote_share_lastelection + served_instateleg
+                + (1|bioguide_id),
+                data = df_morecontrols1973)
+summary(les_model_base)
+vif(les_model_base)
+
+cor.test(df_morecontrols1973$emi, df_morecontrols1973$log_les)
+
+les_model <- lmer(log_les ~ 1 + emi + ideology + congress 
+                + chamber_opposition + president_opposition + republican 
+                + female + senate
+                + latino_a
+                + african_american
+                + seniority_terms + first_term 
+                + committee_chair + subcommittee_chair
+                + majority_party_leadership + minority_party_leadership
+                + vote_share_lastelection + served_instateleg
+                + (1|bioguide_id),
+                data = df_morecontrols1973)
+summary(les_model)
+vif(les_model)
+
+les_model_more <- lmer(log_les ~ 1 + emi + ideology + congress 
+                + chamber_opposition + president_opposition + republican 
+                + female + senate
+                + latino_a
+                + african_american
+                + seniority_terms + first_term 
+                + committee_chair + subcommittee_chair
+                + majority_party_leadership + minority_party_leadership
+                + vote_share_lastelection + served_instateleg
+                + prop_topic_Agriculture + prop_topic_Civil.Rights
+                + prop_topic_Defense + prop_topic_Domestic.Commerce
+                + prop_topic_Education + prop_topic_Energy
+                + prop_topic_Environment + prop_topic_Foreign.Trade
+                + prop_topic_Government.Operations + prop_topic_Health
+                + prop_topic_Housing + prop_topic_Immigration
+                + prop_topic_International.Affairs + prop_topic_Labor
+                + prop_topic_Law.and.Crime + prop_topic_Macroeconomics
+                + prop_topic_Public.Lands + prop_topic_Social.Welfare
+                + prop_topic_Technology + prop_topic_Transportation
+                + log_speechcount + log_tokencount
+                + (1|bioguide_id),
+                data = df_morecontrols1973)
+
+summary(les_model_more)
+vif(les_model_more)
+
+# coef plot
+
+vcov_full <- vcovCR(
+  les_model_more,
+  cluster = df_morecontrols1973$bioguide_id,
+  type = "CR2"
+)
+
+focal_terms <- c(
+  "emi",
+  "ideology",
+  "vote_share_lastelection",
+  "chamber_opposition",
+  "female"
+)
+
+plot_df <- modelplot(
+  list("Full model" = les_model_more),
+  vcov = list(vcov_full),
+  conf_level = 0.95,
+  draw = FALSE
+) |>
+  filter(term %in% focal_terms) |>
+  mutate(
+    label = dplyr::recode(
+      term,
+      emi = "EMI",
+      ideology = "Ideological extremity",
+      vote_share_lastelection = "Vote share",
+      chamber_opposition = "Opposition",
+      female = "Female"
+    ),
+    label = factor(
+      label,
+      levels = c(
+        "Female",
+        "Opposition",
+        "Vote share",
+        "Ideological extremity",
+        "EMI"
+      )
+    )
+  )
+
+p <- ggplot(
+  plot_df,
+  aes(
+    x = estimate,
+    y = label,
+    xmin = conf.low,
+    xmax = conf.high
+  )
+) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    linewidth = 0.5
+  ) +
+  geom_errorbarh(height = 0.12, linewidth = 0.7) +
+  geom_point(size = 2.8) +
+  labs(
+    x = "Coefficient estimate",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12)
+
+ggsave(
+  filename = "../output/EMI_LES-coeff_plot.pdf",
+  plot = p,
+  width = 8,
+  height = 4.5,
+  units = "in"
+)
+
+ggsave(
+  filename = "../output/EMI_LES-coeff_plot.png",
+  plot = p,
+  width = 8,
+  height = 4.5,
+  units = "in",
+  dpi = 300
+)
+
+
+modelsummary(
+  list(les_model_base, les_model, les_model_more),
+  vcov =list(vcovCR(les_model_base, cluster = df_morecontrols1973$bioguide_id, type = "CR2"),
+             vcovCR(les_model, cluster = df_morecontrols1973$bioguide_id, type = "CR2"),
+             vcovCR(les_model_more, cluster = df_morecontrols1973$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^congress",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="../output/LES-EMI-meff_summary.html",
+  fmt = NULL,
+  estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  statistic = "p={f_p(p.value)}", 
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)
+
+tex <-modelsummary(
+  list(les_model_base, les_model, les_model_more),
+  vcov =list(vcovCR(les_model_base, cluster = df_morecontrols1973$bioguide_id, type = "CR2"),
+             vcovCR(les_model, cluster = df_morecontrols1973$bioguide_id, type = "CR2"),
+             vcovCR(les_model_more, cluster = df_morecontrols1973$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^congress",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="tinytable",
+  fmt = NULL,
+  estimate = "{f_est(estimate)}",
+  statistic = c(
+    "[{f_est(conf.low)}, {f_est(conf.high)}]",
+    "p={f_p(p.value)}"
+  ),
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)|>
+  theme_tt("tabular")
+  save_tt(tex, "../output/LES-EMI-meff_summary.tex", overwrite = TRUE)
+```
+# Twitter-Congress model
+```{r}
+df_tw_congress <- read.csv("../data/twitter_speech_sbert_llms.csv")
+df_tw_congress <- subset(
+  df_tw_congress,
+  party_name %in% c("Democratic Party", "Republican Party")
+)
+df_tw_congress$emi <- df_tw_congress$emi_mean
+df_tw_congress$emi_sc <- scale(df_tw_congress$emi)
+df_tw_congress$bioguide_id <- factor(df_tw_congress$bioguide_id)
+df_tw_congress$year_quarter <- factor(df_tw_congress$year_quarter)
+
+
+df_tw_congress$republican <- ifelse(
+df_tw_congress$party_name == "Republican Party",
+  1,
+  0
+)
+
+df_tw_congress$senate <- ifelse(
+df_tw_congress$chamber == "S",
+  1,
+  0
+)
+
+tw <- subset(df_tw_congress, channel == "Twitter")
+floor <- subset(df_tw_congress, channel == "Floor")
+merged <- merge(
+  tw,
+  floor,
+  by = c("bioguide_id", "year_quarter", "chamber"),
+  suffixes = c("_tw", "_floor")
+)
+
+cor.test(
+  merged$emi_mean_tw,
+  merged$emi_mean_floor
+)
+
+merged$emi_mean_tw <- scale(merged$emi_mean_tw)
+merged$emi_mean_floor <- scale(merged$emi_mean_floor)
+
+# Twitter as predictor for floor
+model_floor_tw_base <- lmer(
+  emi_mean_floor ~ emi_mean_tw + year_quarter +
+    (1 | bioguide_id),
+  data = merged
+)
+summary(model_floor_tw_base)
+
+model_floor_tw <- lmer(emi_mean_floor ~ 1 + emi_mean_tw + legislative_opposition_tw
+                      + presidential_opposition_tw
+                      + year_quarter + senate_tw 
+                      + republican_tw + (1|bioguide_id), 
+                        data=merged
+                        )
+summary(model_floor_tw)
+vif(model_floor_tw)
+
+# floor as predictor for twitter
+model_tw_floor_base <- lmer(
+  emi_mean_tw ~ emi_mean_floor + year_quarter +
+    (1 | bioguide_id),
+  data = merged
+)
+summary(model_tw_floor_base)
+
+model_tw_floor <- lmer(emi_mean_tw ~ 1 + emi_mean_floor + legislative_opposition_tw
+                      + presidential_opposition_tw
+                      + year_quarter + senate_tw 
+                      + republican_tw + (1|bioguide_id), 
+                        data=merged
+                        )
+summary(model_tw_floor)
+vif(model_tw_floor)
+
+# medium model
+model_medium_base <- lmer(emi_sc ~ 1 + channel + year_quarter + (1|bioguide_id), 
+                        data=df_tw_congress
+                        )
+summary(model_medium_base)
+
+
+model_medium <- lmer(emi_sc ~ 1 + channel + legislative_opposition
+                      + presidential_opposition
+                      + year_quarter + senate
+                      + republican + (1|bioguide_id), 
+                        data=df_tw_congress
+                        )
+summary(model_medium)
+vif(model_medium)
+
+# twitter predicts floor
+modelsummary(
+  list(model_floor_tw_base, model_floor_tw),
+  vcov =list(vcovCR(model_floor_tw_base, cluster = merged$bioguide_id, type = "CR2"),
+             vcovCR(model_floor_tw, cluster = merged$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="../output/Twitter-Congress-meff_summary.html",
+  fmt = NULL,
+  estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  statistic = "p={f_p(p.value)}", conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)
+
+tex <- modelsummary(
+  list(model_floor_tw_base, model_floor_tw),
+  vcov =list(vcovCR(model_floor_tw_base, cluster = merged$bioguide_id, type = "CR2"),
+             vcovCR(model_floor_tw, cluster = merged$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="tinytable",
+  fmt = NULL,
+  estimate = "{f_est(estimate)}",
+  statistic = c(
+    "[{f_est(conf.low)}, {f_est(conf.high)}]",
+    "p={f_p(p.value)}"
+  ),
+  #estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  #statistic = "p={f_p(p.value)}",
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)|>theme_tt("tabular")
+  save_tt(tex, "../output/Twitter-Congress-meff_summary.tex", overwrite = TRUE)
+
+# floor predicts twitter
+modelsummary(
+  list(model_tw_floor_base, model_tw_floor),
+  vcov =list(vcovCR(model_tw_floor_base, cluster = merged$bioguide_id, type = "CR2"),
+             vcovCR(model_tw_floor, cluster = merged$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="../output/floor-predictor-meff_summary.html",
+  fmt = NULL,
+  estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  statistic = "p={f_p(p.value)}", conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)
+
+tex <- modelsummary(
+  list(model_tw_floor_base, model_tw_floor),
+  vcov =list(vcovCR(model_tw_floor_base, cluster = merged$bioguide_id, type = "CR2"),
+             vcovCR(model_tw_floor, cluster = merged$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="tinytable",
+  fmt = NULL,
+  estimate = "{f_est(estimate)}",
+  statistic = c(
+    "[{f_est(conf.low)}, {f_est(conf.high)}]",
+    "p={f_p(p.value)}"
+  ),
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)|>theme_tt("tabular")
+  save_tt(tex, "../output/floor-predictor-meff_summary.tex", overwrite = TRUE)
+  
+# medium model
+modelsummary(
+  list(model_medium_base, model_medium),
+  vcov =list(vcovCR(model_medium_base, cluster = df_tw_congress$bioguide_id, type = "CR2"),
+             vcovCR(model_medium, cluster = df_tw_congress$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="../output/Twitter-Congress-medium_summary.html",
+  fmt = NULL,
+  estimate  = "{f_est(estimate)} [{f_est(conf.low)}, {f_est(conf.high)}]",
+  statistic = "p={f_p(p.value)}", conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)
+
+tex <- modelsummary(
+  list(model_medium_base, model_medium),
+  vcov =list(vcovCR(model_medium_base, cluster = df_tw_congress$bioguide_id, type = "CR2"),
+             vcovCR(model_medium, cluster = df_tw_congress$bioguide_id, type = "CR2")
+             ),
+  coef_omit = "^bioguide_id|^year_quarter",
+  gof_omit="AIC|BIC|RMSE|Log.Lik.",
+  output ="tinytable",
+  fmt = NULL,
+  estimate = "{f_est(estimate)}",
+  statistic = c(
+    "[{f_est(conf.low)}, {f_est(conf.high)}]",
+    "p={f_p(p.value)}"
+  ),
+  conf_level=0.95,
+  notes = "Values in square brackets represent 95% confidence intervals based on cluster-robust standard errors, with clustering at the legislator level."
+)|>theme_tt("tabular")
+  save_tt(tex, "../output/Twitter-Congress-medium_summary.tex", overwrite = TRUE)
+    
+```
+
