@@ -1,1 +1,1 @@
-# emi_legislator_level_analyses
+# Epistemic orientation predicts legislative effectiveness among members of the US Congress
