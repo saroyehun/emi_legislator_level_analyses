@@ -66,7 +66,7 @@ def add_party_legend(ax):
 
     ax.legend(handles=handles, frameon=False)
 
-def plot_twitter_floor(ax, data, title=None, marginal_means=True):
+def plot_twitter_floor(ax, data, title=None, marginal_means=False):
     parties = {
         "Republican Party": "red",
         "Democratic Party": "blue"
